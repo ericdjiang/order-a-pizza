@@ -1,6 +1,9 @@
 # Order a pizza
 A simple implementation of an autonomous web browsing agent.
 
+As seen in the [AI Camp Meetup](https://www.aicamp.ai/event/eventdetails/W2024030617) on Mar 6, 2024.
+
+[Presentation Slides](https://docs.google.com/presentation/d/1OkrKJCw-vqkCIeiSP-13K8XKeuKSV7tfGsVc5BI1-4A/edit#slide=id.p)
 
 # Getting started
 Create a `.env` file with a Gemini API key
@@ -26,3 +29,5 @@ This is super WIP right now! The code is all over the place and messy, and I wil
 If you have any questions / want to contribute, would love to chat!
 
 My Linkedin: https://www.linkedin.com/in/ericdjiang/
+
+![cute](https://github.com/ericdjiang/order-a-pizza/assets/20948797/54dd9524-ae05-462f-838e-7d3dcef605c6)
