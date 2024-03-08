@@ -8,7 +8,7 @@ import textwrap
 from playwright.sync_api import Page, sync_playwright
 import ast
 from webpage import html_diff, simplify_html, sanitize_html_for_diffing
-from llm import GeminiUsage, call_llm, call_openai
+from llm import GeminiUsage, call_gemini
 import minify_html
 from termcolor import colored, cprint
 import inspect
@@ -369,7 +369,7 @@ class TurnHistory:
         cprint(prompt, "yellow")
 
         time.sleep(1)
-        return call_llm(
+        return call_gemini(
             prompt=prompt,
             gemini_usage=gemini_usage,
         )
@@ -511,14 +511,14 @@ with sync_playwright() as playwright:
         print(f"-------------Action {i}-----------------")
         browser_page = BrowserPage.construct(page=page)
         prompt = fmt_browser_agent_prompt(
-            task="Order a large Pepperoni Pizza from Dominos delivered to 74 New Montgomery St, Unit 717 San Francisco 94105",
+            task="Order a large Pepperoni Pizza from Dominos delivered to 75 Harrison St, San Francisco 94107",
             available_actions=available_actions,
             turn_history=turn_history,
             browser_page=browser_page,
         )
         print(f"Prompt:\n{prompt}")
 
-        llm_output = call_llm(prompt, gemini_usage=gemini_usage)
+        llm_output = call_gemini(prompt, gemini_usage=gemini_usage)
         # llm_output = call_openai(prompt)
 
         cprint(f"\n\nLLM Output:\n{llm_output}", "green")

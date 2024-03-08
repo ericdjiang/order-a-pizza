@@ -4,12 +4,12 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from termcolor import colored
 from openai import OpenAI
-from claude_api import Client
 
 load_dotenv()
 
+SOLAR_API_KEY = os.getenv("SOLAR_API_KEY")
 GEMINI_PRO_API_KEY = os.getenv("GEMINI_PRO_API_KEY")
-CLAUDE_COOKIE = os.getenv("CLAUDE_COOKIE")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 genai.configure(api_key=GEMINI_PRO_API_KEY)
 
@@ -25,8 +25,8 @@ class GeminiUsage:
 
         turn_cost = self._calculate_cost(len(prompt), len(llm_output))
 
-        # print(colored(f"Turn cost: ${turn_cost}", "green"))
-        # print(colored(f"Total cost: ${self.total_cost}", "blue"))
+        print(colored(f"Turn cost: ${turn_cost}", "green"))
+        print(colored(f"Total cost: ${self.total_cost}", "blue"))
 
         return turn_cost
 
@@ -44,8 +44,11 @@ class GeminiUsage:
         )
 
 
-def call_llm(
-    prompt: str, gemini_usage: GeminiUsage = GeminiUsage(), temperature=0.3, chat: bool = True
+def call_gemini(
+    prompt: str,
+    gemini_usage: GeminiUsage = GeminiUsage(),
+    temperature=0.3,
+    chat: bool = True,
 ) -> str:
     model = genai.GenerativeModel(
         model_name="gemini-pro",
@@ -72,14 +75,16 @@ def call_llm(
 
 
 def call_openai(prompt: str, temperature: float = 0.0):
-    client = OpenAI()
+    client = OpenAI(
+        api_key=OPENAI_API_KEY,
+    )
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {
                 "role": "system",
-                "content": "You are an expert about the Python Playwright library. You are logical, resourceful, and a pro at web browsing.",
+                "content": "You are a helpful assistant who is able to interact with a web browser.",
             },
             {"role": "user", "content": prompt},
         ],
@@ -89,7 +94,19 @@ def call_openai(prompt: str, temperature: float = 0.0):
     return response.choices[0].message.content
 
 
-def call_claude(prompt: str):
-    claude_api = Client(CLAUDE_COOKIE)
-    conversation_id = claude_api.create_new_chat()["uuid"]
-    return claude_api.send_message(prompt, conversation_id)
+def call_solar(prompt: str, temperature: float = 0.0):
+    client = OpenAI(api_key=SOLAR_API_KEY, base_url="https://api.upstage.ai/v1/solar")
+
+    response = client.chat.completions.create(
+        model="solar-1-mini-chat",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful assistant who is able to interact with a web browser.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        temperature=temperature,
+    )
+
+    return response.choices[0].message.content
